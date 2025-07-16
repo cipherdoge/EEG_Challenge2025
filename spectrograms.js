@@ -1,4 +1,3 @@
-// List all image filenames manually or fetched via script if using a build tool
 const imageFiles = [
   "E74_spectrogram.png",
   "E81_spectrogram.png",
@@ -7,22 +6,37 @@ const imageFiles = [
   // Add more if needed
 ];
 
-const container = document.getElementById('spectrogram-container');
+let currentIndex = 0;
 
-imageFiles.forEach(filename => {
+const titleElement = document.getElementById('spectrogram-title');
+const imgElement = document.getElementById('spectrogram-image');
+const prevButton = document.getElementById('prev-button');
+const nextButton = document.getElementById('next-button');
+
+function updateViewer() {
+  const filename = imageFiles[currentIndex];
   const title = filename.replace(/\.[^/.]+$/, "").replace(/[_-]/g, " ");
+  titleElement.textContent = title;
+  imgElement.src = `ssveps/${filename}`;
+  imgElement.alt = title;
 
-  const div = document.createElement('div');
-  div.className = 'spectrogram';
+  prevButton.disabled = currentIndex === 0;
+  nextButton.disabled = currentIndex === imageFiles.length - 1;
+}
 
-  const h2 = document.createElement('h2');
-  h2.textContent = title;
-
-  const img = document.createElement('img');
-  img.src = `ssveps/${filename}`;
-  img.alt = title;
-
-  div.appendChild(h2);
-  div.appendChild(img);
-  container.appendChild(div);
+prevButton.addEventListener('click', () => {
+  if (currentIndex > 0) {
+    currentIndex--;
+    updateViewer();
+  }
 });
+
+nextButton.addEventListener('click', () => {
+  if (currentIndex < imageFiles.length - 1) {
+    currentIndex++;
+    updateViewer();
+  }
+});
+
+// Initialize view
+updateViewer();

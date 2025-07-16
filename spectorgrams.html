@@ -5,29 +5,44 @@
   <title>Multitaper Spectrograms</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    .spectrogram {
-      margin: 20px 0;
-      padding: 10px;
-      border: 1px solid #ccc;
+    .viewer {
+      text-align: center;
+      margin-top: 40px;
     }
-    .spectrogram img {
-      max-width: 100%;
+    img {
+      max-width: 90%;
       height: auto;
     }
-    .spectrogram h2 {
-      font-size: 1.2em;
-      margin-bottom: 5px;
+    .nav-buttons {
+      margin-top: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 0 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    h2 {
+      margin-bottom: 20px;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Multitaper Spectrograms</h1>
-    <div id="spectrogram-container"></div>
-    <p><a href="index.html">← Back to Home</a></p>
+    <h1>Multitaper Spectrogram Viewer</h1>
+
+    <div class="viewer">
+      <h2 id="spectrogram-title">Loading...</h2>
+      <img id="spectrogram-image" src="" alt="Spectrogram" />
+      <div class="nav-buttons">
+        <button id="prev-button">← Previous</button>
+        <button id="next-button">Next →</button>
+      </div>
+    </div>
+
+    <p style="text-align:center;"><a href="index.html">← Back to Home</a></p>
   </div>
 
-  <!-- Link to the external script -->
-  <script src="spectrograms.js"></script>
+  <script src="./spectrograms.js"></script>
 </body>
 </html>
