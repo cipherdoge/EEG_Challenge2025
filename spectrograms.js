@@ -12,6 +12,7 @@ const titleElement = document.getElementById('spectrogram-title');
 const imgElement = document.getElementById('spectrogram-image');
 const prevButton = document.getElementById('prev-button');
 const nextButton = document.getElementById('next-button');
+const fullscreenButton = document.getElementById('fullscreen-button');
 
 function updateViewer() {
   const filename = imageFiles[currentIndex];
@@ -35,6 +36,16 @@ nextButton.addEventListener('click', () => {
   if (currentIndex < imageFiles.length - 1) {
     currentIndex++;
     updateViewer();
+  }
+});
+
+fullscreenButton.addEventListener('click', () => {
+  if (imgElement.requestFullscreen) {
+    imgElement.requestFullscreen();
+  } else if (imgElement.webkitRequestFullscreen) {
+    imgElement.webkitRequestFullscreen();
+  } else if (imgElement.msRequestFullscreen) {
+    imgElement.msRequestFullscreen();
   }
 });
 
