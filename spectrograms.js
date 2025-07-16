@@ -3,7 +3,6 @@ const imageFiles = [
   "E81_spectrogram.png",
   "E82_spectrogram.png",
   "E88_spectrogram.png"
-  // Add more if needed
 ];
 
 let currentIndex = 0;
@@ -49,5 +48,4 @@ fullscreenButton.addEventListener('click', () => {
   }
 });
 
-// Initialize view
 updateViewer();

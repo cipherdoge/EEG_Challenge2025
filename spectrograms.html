@@ -5,6 +5,13 @@
   <title>Multitaper Spectrograms</title>
   <link rel="stylesheet" href="style.css" />
   <style>
+    body.spectrogram-viewer .container {
+      width: 100%;
+      max-width: none;
+      padding: 0 40px;
+      box-sizing: border-box;
+    }
+
     .viewer {
       text-align: center;
       margin-top: 40px;
@@ -38,8 +45,9 @@
       margin-top: 15px;
     }
   </style>
+
 </head>
-<body>
+<body class="spectrogram-viewer">
   <div class="container">
     <h1>Multitaper Spectrogram Viewer</h1>
 
