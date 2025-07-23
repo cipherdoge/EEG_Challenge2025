@@ -2,125 +2,55 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>EEG PSD + FOOOF Viewer</title>
-  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <title>EEG PSD Viewer</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       max-width: 900px;
       margin: auto;
       padding: 20px;
-    }
-    h1 {
       text-align: center;
     }
-    #controls {
-      margin-bottom: 20px;
-      display: flex;
-      justify-content: center;
-      gap: 15px;
+    select {
+      margin: 20px;
+      padding: 5px;
+      font-size: 16px;
+    }
+    img {
+      max-width: 100%;
+      height: auto;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
     }
   </style>
 </head>
 <body>
-  <h1>EEG PSD + FOOOF Viewer (Channels E73, E74, E81, E82, E88)</h1>
-  
-  <div id="controls">
-    <label>
-      Select Channel:
-      <select id="channel-select"></select>
-    </label>
-    <label>
-      Scale:
-      <select id="scale-select">
-        <option value="log">Log (MNE-style)</option>
-        <option value="linear">Linear</option>
-      </select>
-    </label>
+  <h1>EEG PSD (FOOOF) Viewer</h1>
+
+  <label>
+    Select Channel:
+    <select id="channel-select">
+      <option value="E73">E73</option>
+      <option value="E74">E74</option>
+      <option value="E81">E81</option>
+      <option value="E82">E82</option>
+      <option value="E88">E88</option>
+    </select>
+  </label>
+
+  <div>
+    <img id="plot-image" src="plots/E73_fooof.png" alt="PSD Plot">
   </div>
-  
-  <div id="plot" style="width:100%; height:600px;"></div>
-  
+
   <script>
-    fetch('data/fooof_results_5channels.json')
-      .then(response => response.json())
-      .then(data => {
-        const freqs = data.freqs;
-        const channelNames = Object.keys(data.channels);
-        const channelData = data.channels;
+    const select = document.getElementById('channel-select');
+    const img = document.getElementById('plot-image');
 
-        const channelSelect = document.getElementById('channel-select');
-        const scaleSelect = document.getElementById('scale-select');
-
-        // Populate dropdown
-        channelNames.forEach((ch, idx) => {
-          const option = document.createElement('option');
-          option.value = ch;
-          option.text = ch;
-          channelSelect.add(option);
-        });
-
-        // Function to plot channel with PSD + FOOOF fit + peak shading
-        function plotChannel(chName, yScale = 'log') {
-          const ch = channelData[chName];
-
-          // Raw PSD trace
-          const tracePSD = {
-            x: freqs,
-            y: ch.original_psd,
-            mode: 'lines',
-            line: { color: '#1f77b4', width: 2 },
-            name: `${chName} PSD`
-          };
-
-          // FOOOF model fit trace
-          const traceFOOOF = {
-            x: freqs,
-            y: ch.fooof_model,
-            mode: 'lines',
-            line: { color: '#ff7f0e', width: 2, dash: 'dash' },
-            name: `${chName} FOOOF Model`
-          };
-
-          // Peak shading traces
-          const peakShapes = (ch.peak_params || []).map(peak => {
-            const [cf, pw, bw] = peak;
-            return {
-              type: 'rect',
-              xref: 'x',
-              yref: 'paper',
-              x0: cf - bw / 2,
-              x1: cf + bw / 2,
-              y0: 0,
-              y1: 1,
-              fillcolor: 'rgba(255,0,0,0.1)',
-              line: { width: 0 }
-            };
-          });
-
-          const layout = {
-            title: `PSD + FOOOF of ${chName}`,
-            xaxis: { title: 'Frequency (Hz)', range: [1, 40] },
-            yaxis: { title: 'Power Spectral Density (µV²/Hz)', type: yScale },
-            margin: { l: 60, r: 30, t: 60, b: 60 },
-            shapes: peakShapes,
-            legend: { orientation: 'h', x: 0.2, y: -0.2 }
-          };
-
-          Plotly.newPlot('plot', [tracePSD, traceFOOOF], layout, {responsive: true});
-        }
-
-        // Event listeners
-        channelSelect.addEventListener('change', () => {
-          plotChannel(channelSelect.value, scaleSelect.value);
-        });
-        scaleSelect.addEventListener('change', () => {
-          plotChannel(channelSelect.value, scaleSelect.value);
-        });
-
-        // Plot the first channel by default
-        plotChannel(channelNames[0]);
-      });
+    select.addEventListener('change', () => {
+      const ch = select.value;
+      img.src = `data/${ch}_fooof.png`;
+    });
   </script>
 </body>
 </html>
