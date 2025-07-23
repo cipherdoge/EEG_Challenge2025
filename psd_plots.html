@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>EEG PSD Viewer</title>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 900px;
+      margin: auto;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
+    #controls {
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+  </style>
+</head>
+<body>
+  <h1>EEG PSD Viewer (Channels E73, E74, E81, E82, E88)</h1>
+  
+  <div id="controls">
+    <label>
+      Select Channel:
+      <select id="channel-select"></select>
+    </label>
+    <label>
+      Scale:
+      <select id="scale-select">
+        <option value="log">Log (MNE-style)</option>
+        <option value="linear">Linear</option>
+      </select>
+    </label>
+  </div>
+  
+  <div id="plot" style="width:100%; height:600px;"></div>
+  
+  <script>
+    fetch('data/psd_results.json')
+      .then(response => response.json())
+      .then(data => {
+        const freqs = data.freqs;
+        const channels = data.channels;
+        const psd = data.psd;
+
+        const channelSelect = document.getElementById('channel-select');
+        const scaleSelect = document.getElementById('scale-select');
+
+        // Populate dropdown
+        channels.forEach((ch, idx) => {
+          const option = document.createElement('option');
+          option.value = idx;
+          option.text = ch;
+          channelSelect.add(option);
+        });
+
+        // Function to plot selected channel
+        function plotChannel(idx, yScale='log') {
+          const trace = {
+            x: freqs,
+            y: psd[idx],
+            mode: 'lines',
+            line: { color: '#1f77b4', width: 2 },
+            name: channels[idx]
+          };
+          const layout = {
+            title: `PSD of ${channels[idx]}`,
+            xaxis: { title: 'Frequency (Hz)', range: [1, 40] },
+            yaxis: { title: 'Power Spectral Density (µV²/Hz)', type: yScale },
+            margin: { l: 60, r: 30, t: 60, b: 60 }
+          };
+          Plotly.newPlot('plot', [trace], layout, {responsive: true});
+        }
+
+        // Event listeners
+        channelSelect.addEventListener('change', () => {
+          plotChannel(channelSelect.value, scaleSelect.value);
+        });
+        scaleSelect.addEventListener('change', () => {
+          plotChannel(channelSelect.value, scaleSelect.value);
+        });
+
+        // Plot first channel by default
+        plotChannel(0);
+      });
+  </script>
+</body>
+</html>
